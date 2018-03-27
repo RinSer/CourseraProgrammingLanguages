@@ -7,14 +7,22 @@ class MyPiece < Piece
   # The constant All_My_Pieces should be declared here
   
   # class array holding all the pieces and their rotations
-  All_My_Pieces = [rotations([[0, 0], [1, 0], [0, 1], [1, 1], [2, 1]]),  # square with dot
-               rotations([[0, 0], [0, 1], [1, 0]]), # short L
-               [[[0, 0], [-2, 0], [-1, 0], [1, 0], [2, 0]], # very long 5 (only needs two)
-               [[0, 0], [0, -2], [0, -1], [0, 1], [0, 2]]]]
+  All_My_Pieces = [[[[0, 0], [1, 0], [0, 1], [1, 1]]],  # square (only needs one)
+                rotations([[0, 0], [-1, 0], [1, 0], [0, -1]]), # T
+                [[[0, 0], [-1, 0], [1, 0], [2, 0]], # long (only needs two)
+                [[0, 0], [0, -1], [0, 1], [0, 2]]],
+                rotations([[0, 0], [0, -1], [0, 1], [1, 1]]), # L
+                rotations([[0, 0], [0, -1], [0, 1], [-1, 1]]), # inverted L
+                rotations([[0, 0], [-1, 0], [0, -1], [1, -1]]), # S
+                rotations([[0, 0], [1, 0], [0, -1], [-1, -1]]), # Z
+                rotations([[0, 0], [1, 0], [0, 1], [1, 1], [2, 1]]),  # square with dot
+                rotations([[0, 0], [0, 1], [1, 0]]), # short L
+                [[[0, 0], [-2, 0], [-1, 0], [1, 0], [2, 0]], # very long 5 (only needs two)
+                [[0, 0], [0, -2], [0, -1], [0, 1], [0, 2]]]] 
   # your enhancements here
   # class method to choose the next piece
   def self.next_piece (board)
-    MyPiece.new((All_Pieces + All_My_Pieces).sample, board)
+    MyPiece.new(All_My_Pieces.sample, board)
   end
 end
 
@@ -41,30 +49,6 @@ class MyBoard < Board
       @current_block.move(0, 0, 2)
     end
     draw
-  end
-
-  # removes all filled rows and replaces them with empty ones, dropping all rows
-  # above them down each time a row is removed and increasing the score.  
-  def remove_filled
-    (2..(@grid.size-1)).each{|num| row = @grid.slice(num);
-      # see if this row is full (has no nil)
-      if @grid[num].all?
-        # remove from canvas blocks in full row
-        (0..(num_columns-1)).each{|index|
-          @grid[num][index].remove;
-          @grid[num][index] = nil
-        }
-        # move down all rows above and move their blocks on the canvas
-        ((@grid.size - num + 1)..(@grid.size)).each{|num2|
-          @grid[@grid.size - num2].each{|rect| rect && rect.move(0, block_size)};
-          @grid[@grid.size-num2+1] = Array.new(@grid[@grid.size - num2])
-        }
-        # insert new blank row at top
-        @grid[0] = Array.new(num_columns);
-        # adjust score for full flow
-        @score += 10;
-      end}
-    self
   end
 
 end
