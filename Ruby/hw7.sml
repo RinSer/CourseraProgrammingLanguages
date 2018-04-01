@@ -220,4 +220,7 @@ fun preprocess_prog (e) =
 						then LineSegment(x2, y2, x1 ,y1)
 						else e
 					end
-	 | _ => e
+	| Let(s, LineSegment s1, LineSegment s2) => Let(s, preprocess_prog(LineSegment(s1)), preprocess_prog(LineSegment(s2)))
+	| Intersect(LineSegment s1, LineSegment s2) => Intersect(preprocess_prog(LineSegment(s1)), preprocess_prog(LineSegment(s2)))
+	| Shift(dx, dy, LineSegment s) => Shift(dx, dy, preprocess_prog(LineSegment(s)))
+	| _ => e
